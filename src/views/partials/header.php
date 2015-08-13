@@ -1,9 +1,4 @@
 <?php
-    /*$user = AuthenticationManager::getAuthenticatedUser();
-    $cartSize = ShoppingCart::size();
-    if(isset($_GET["errors"])){
-        $errors = unserialize(urldecode($_GET["errors"]));
-    }*/
 
 ?>
 
@@ -22,18 +17,16 @@
         <header>
             <h1>Slack Light - Version 1.0</h1>
         </header>
+        <?php if(isset($user)) { ?>
         <div id="menu" class="row">
             <div class="large-12 columns">
-                <div class="nav-bar right">
-                    <ul class="button-group">
-                        <li><a href="#" class="button">Link 1</a></li>
-                        <li><a href="#" class="button">Link 2</a></li>
-                        <li><a href="#" class="button">Link 3</a></li>
-                        <li><a href="#" class="button">Link 4</a></li>
-                    </ul>
-                </div>
-                <h1>Blog <small>This is my blog. It's awesome.</small></h1>
-                <hr/>
+                <dl class="sub-nav">
+                    <dd><a href="#">Link 1</a></dd>
+                    <dd><a href="#">Link 2</a></dd>
+                    <dd><a href="#">Link 3</a></dd>
+                    <dd><a href="#">Link 4</a></dd>
+                </dl>
             </div>
         </div>
+        <?php } ?>
     <div class="container">
