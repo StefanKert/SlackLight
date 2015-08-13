@@ -1,7 +1,5 @@
-<?php
-/**
- * Created by IntelliJ IDEA.
- * User: Stefan
- * Date: 13.08.2015
- * Time: 14:47
- */
+<?php require_once("views/partials/header.php") ?>
+
+<?php require_once("views/login.php") ?>
+
+<?php require_once("views/partials/footer.php") ?>
