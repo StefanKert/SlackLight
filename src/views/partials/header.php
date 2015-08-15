@@ -1,7 +1,3 @@
-<?php
-
-?>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,8 +12,13 @@
     <body>
         <header>
             <h1>Slack Light - Version 1.0</h1>
+            <?php   if(AuthenticationManager::isAuthenticated()) { ?>
+            <span>
+                <a href="index.php?controller=authentication&action=logout"> Logout </a>
+            </span>
+            <?php } ?>
         </header>
-        <?php if(isset($user)) { ?>
+        <?php   if(AuthenticationManager::isAuthenticated()) { ?>
         <div id="menu" class="row">
             <div class="large-12 columns">
                 <dl class="sub-nav">

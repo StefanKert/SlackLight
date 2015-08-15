@@ -45,8 +45,31 @@ header {
     min-height: 76px;
 }
 
+footer {
+    margin: 0px;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    text-align: center;
+    background: #4276B6 url("images/background.png") repeat scroll 0% 0%;
+    box-shadow: 1px 0px 2px rgba(0, 0, 0, 0.75);
+    z-index: 99;
+}
+
 header h1 {
     font: 40px/48px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #F3F3F3;
+    text-shadow: 0px 2px 0px #235796;
+    margin: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+footer p {
+    font: 24px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #F3F3F3;
     text-shadow: 0px 2px 0px #235796;
     margin: 0px;

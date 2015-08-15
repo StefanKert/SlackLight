@@ -2,12 +2,12 @@
     <div class="login-box">
         <div class="row">
             <div class="large-12 columns">
-                <form>
+                <form method="post" action="index.php?controller=authentication&action=register&view=register">
                     <div class="row">
                         <div class="large-12 columns">
                             <label>
                                 Benutzername
-                                <input type="text" name="username" placeholder="Benutzername" />
+                                <input type="text" name="username" placeholder="Benutzername" required/>
                             </label>
                         </div>
                     </div>
@@ -15,7 +15,7 @@
                         <div class="large-12 columns">
                             <label>
                                 Passwort
-                                <input type="password" name="password" placeholder="Passwort" />
+                                <input type="password" name="password" placeholder="Passwort" required/>
                             </label>
                         </div>
                     </div>
@@ -23,21 +23,19 @@
                         <div class="large-12 columns">
                             <label>
                                 Passwort wiederholen
-                                <input type="password" name="passwordCheck" placeholder="Passwort" />
+                                <input type="password" name="passwordCheck" placeholder="Passwort" required/>
                             </label>
                         </div>
                     </div>
-                    <div>
-                        <div data-alert class="alert-box alert radius">
-                            This is a alert with a radius.
-                            <a href="#" class="close">&times;</a>
-                        </div>
-                    </div>
+                    <?php include("views/partials/errors.php"); ?>
                     <div class="row">
                         <div class="large-12 large-centered columns">
-                            <a role="button" class="button expand"> Registrieren </a>
+                            <input type="submit" class="button expand" value="Registrieren"/>
                         </div>
                     </div>
+                    <p>
+                        <a href="index.php?view=login"> Zur&uuml;ck zum Login. </a>
+                    </p>
                 </form>
             </div>
         </div>

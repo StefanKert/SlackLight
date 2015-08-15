@@ -1,15 +1,8 @@
-<div class="footer">
-    <hr/>
-    <div class="col-sm-4 pull-right">
-        <p><?php echo strftime('%c'); ?></p>
-    </div>
+    </div> <!-- container -->
 
-
-    <!--/display cart info-->
-
-</div>
-
-</div> <!-- container -->
+    <footer>
+        <p>&copy; by Stefan Kert 2015</p>
+    </footer>
 
 <script src="assets/jquery-1.11.2.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
