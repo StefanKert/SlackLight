@@ -4,8 +4,9 @@ SessionContext::create();
 class AuthenticationManager extends BaseObject {
 
     public static function Authenticate($userName, $password){
-        /*$user = DataManager::getUserForUserName($userName);
-        if($user != null && $user->getPasswordHash() == hash('sha1', "$userName|$password")){
+        $repository = new UserRepository();
+        $user =  $repository->getUserForUserName($userName);
+ /*       if($user != null && $user->getPasswordHash() == hash('sha1', "$userName|$password")){
             $_SESSION['user'] = $user->getId();
             return true;
         }
@@ -13,10 +14,19 @@ class AuthenticationManager extends BaseObject {
             self::signOut();
             return false;
         }*/
+        if($user != null && $user->getPasswordHash() == $password){
+            $_SESSION['user'] = $user->getId();
+            return true;
+        }
+        else{
+            self::signOut();
+            return false;
+        }
     }
 
     public static function getAuthenticatedUser(){
-       // return self::isAuthenticated() ? DataManager::getUserForId($_SESSION['user']) : null;
+        $repository = new UserRepository();
+        return self::isAuthenticated() ? $repository->getUserForId($_SESSION['user']) : null;
     }
 
     public static function saveLoggedInUser($user){

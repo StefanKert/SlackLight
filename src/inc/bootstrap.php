@@ -8,10 +8,14 @@
     include 'common/AuthenticationManager.php';
     include 'data/DataManager.php';
     include 'data/UserRepository.php';
+    include 'data/ChannelRepository.php';
+    include 'data/CommentRepository.php';
     include 'models/Entity.php';
     include 'models/User.php';
+    include 'models/Channel.php';
+    include 'models/Comment.php';
     include 'controller/AuthenticationController.php';
-
+    include 'controller/ChannelController.php';
     /*spl_autoload_register(function($className){
         include 'controller/' . $className . '.php';
         include 'common/' . $className . '.php';

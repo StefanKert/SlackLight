@@ -2,35 +2,39 @@
 
 
 class User extends Entity {
-    /**
-     * @var string
-     */
     private $userName;
-    /**
-     * @var string
-     */
     private $passwordHash;
-    /**
-     * Category constructor.
-     * @param string $userName
-     * @param string $passwordHash
-     */
-    public function __construct($id, $userName, $passwordHash) {
+    private $firstName;
+    private $lastName;
+    private $mail;
+
+    public function __construct($id, $userName, $passwordHash, $firstName, $lastName, $mail) {
         parent::__construct($id);
         $this->userName = $userName;
         $this->passwordHash = $passwordHash;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->mail = $mail;
     }
 
-    /**
-     * @return mixed
-     */
+
     public function getUserName() {
         return $this->userName;
     }
-    /**
-     * @return mixed
-     */
+
     public function getPasswordHash() {
         return $this->passwordHash;
+    }
+
+    public function getFirstName() {
+        return $this->firstName;
+    }
+
+    public function getLastName() {
+        return $this->lastName;
+    }
+
+    public function getMail() {
+        return $this->mail;
     }
 }

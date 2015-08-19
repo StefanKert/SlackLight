@@ -1,64 +1,31 @@
 <?php
 
-/**
- * Created by IntelliJ IDEA.
- * User: Stefan
- * Date: 15.08.2015
- * Time: 12:46
- */
-class UserRepository
+class UserRepository extends BaseObject
 {
-    private $users;
+    public function __construct(){}
 
-    public function __construct(){
-        $users = array();
+    public function createUser($username, $passwordHash, $firstName, $lastName, $mail) {
+        return DataManager::performInsertion("INSERT INTO users (username, passwordHash, firstName, lastName, mail) VALUES (?, ?, ?, ? ,?);", array($username, $passwordHash, $firstName, $lastName, $mail));
     }
 
-    public function UserExists($username){
-        return true;
+    public function getUserForId($userId) {
+        return DataManager::performSelectWithFetch("SELECT id, username, passwordHash, firstName, lastName, mail FROM users WHERE id = ?;", array($userId), function($res){
+            return $this->fetchUserObject($res);
+        });
     }
-    public function GetUserWithUsernameAndPassword($username, $password){
-        var_dump($username);
-        var_dump($password);
-        if($username === "Test" && $password === "test") {
-            return new User($username, $password);
+
+    public function getUserForUserName($userName) {
+        return DataManager::performSelectWithFetch("SELECT id, username, passwordHash, firstName, lastName, mail FROM users WHERE username = ?;", array($userName), function($res){
+            return $this->fetchUserObject($res);
+        });
+    }
+
+    private function fetchUserObject($res){
+        if ($u = DataManager::fetchObject($res)) {
+            return new User($u->id, $u->username, $u->passwordHash, $u->firstName, $u->lastName, $u->mail);
         }
-        else {
+        else{
             return null;
         }
-    }
-
-    public static function createUser($username, $passwordHash) {
-
-        $con = DataManager::getConnection();
-        DataManager::query($con, 'BEGIN;');
-
-        DataManager::query($con, "INSERT INTO users (username, passwordHash) VALUES (?, ?);", array($username, $passwordHash));
-        $userId = DataManager::lastInsertId($con);
-        DataManager::query($con, 'COMMIT;');
-        return $userId;
-    }
-
-
-    public static function getUserForId($userId) {
-        $user = null;
-        $con = DataManager::getConnection();
-        $res = DataManager::query($con, "SELECT id, username, passwordHash FROM users WHERE id = ?;", array($userId));
-        if ($u = DataManager::fetchObject($res)) {
-            $user = new User($u->id, $u->userName, $u->passwordHash);
-        }
-        DataManager::close($res);
-        return $user;
-    }
-
-    public static function getUserForUserName($userName) {
-        $user = null;
-        $con = DataManager::getConnection();
-        $res = DataManager::query($con, "SELECT id, username, passwordHash FROM users WHERE username = ?;", array($userName));
-        if ($u = DataManager::fetchObject($res)) {
-            $user = new User($u->id, $u->username, $u->passwordHash);
-        }
-        DataManager::close($res);
-        return $user;
     }
 }

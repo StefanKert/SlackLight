@@ -1,3 +1,9 @@
+<?php
+    $userRepository = new UserRepository();
+    $channelRepository = new ChannelRepository();
+?>
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,27 +13,35 @@
 
         <link href="assets/foundation/css/foundation.min.css" rel="stylesheet">
         <link href="assets/foundation/css/normalize.css" rel="stylesheet">
+        <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="assets/main.css" rel="stylesheet">
     </head>
     <body>
+        <?php   if(AuthenticationManager::isAuthenticated()) { ?>
+        <a class="logout-button button tiny secondary" href="index.php?controller=authentication&action=logout">Logout</a>
+        <?php } ?>
         <header>
             <h1>Slack Light - Version 1.0</h1>
-            <?php   if(AuthenticationManager::isAuthenticated()) { ?>
-            <span>
-                <a href="index.php?controller=authentication&action=logout"> Logout </a>
-            </span>
-            <?php } ?>
+            <?php   if(AuthenticationManager::isAuthenticated()) {
+                $user = AuthenticationManager::getAuthenticatedUser();
+                if($user == null){
+                    AuthenticationManager::signOut();
+                    Util::redirect("index.php");
+                }
+                echo("<p>Hi ". $user->getFirstName() . " " .  $user->getLastName() .  "!</p>");
+        } ?>
         </header>
         <?php   if(AuthenticationManager::isAuthenticated()) { ?>
         <div id="menu" class="row">
-            <div class="large-12 columns">
-                <dl class="sub-nav">
-                    <dd><a href="#">Link 1</a></dd>
-                    <dd><a href="#">Link 2</a></dd>
-                    <dd><a href="#">Link 3</a></dd>
-                    <dd><a href="#">Link 4</a></dd>
-                </dl>
-            </div>
+            <ul class="sub-nav">
+                <li><a href="index.php?view=main"/>Favoriten</a></li>
+                <?php
+                    $channels = $channelRepository->getChannelsForUser($_SESSION['user']);
+                    foreach ($channels as $channel){
+                        echo('<li><a href="index.php?view=main&channelId='. $channel->getId() .'"/>' .  $channel->getTitle() . '(' .$channelRepository->getCountOfNewPosts($channel->getId()) . ')</a></li>');
+                    }
+                ?>
+            </ul>
         </div>
         <?php } ?>
-    <div class="container">
+    <div class="main">

@@ -11,6 +11,10 @@
             $controller = new AuthenticationController(new UserRepository());
             $controller->handleAction();
             break;
+        case "channel":
+            $controller = new ChannelController(new CommentRepository());
+            $controller->handleAction();
+            break;
         default:
             break;
     }

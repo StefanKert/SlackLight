@@ -24,10 +24,14 @@ body {
 }
 
 .login-box {
-    margin-top: 200px;
     background: #fff;
     border: 1px solid #ddd;
     padding: 40px 20px 0 20px;
+}
+.message-box {
+    overflow: auto;
+}
+.add-message-box {
 }
 
 header {
@@ -68,7 +72,7 @@ header h1 {
     text-overflow: ellipsis;
 }
 
-footer p {
+footer p, header p {
     font: 24px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #F3F3F3;
     text-shadow: 0px 2px 0px #235796;
@@ -90,4 +94,63 @@ footer p {
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
     border-radius: 0px 2px 2px 0px;
     padding-right: 10px;
+}
+.sub-nav {
+    list-style-type: none;
+}
+.sub-nav li a {
+    font: 24px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: black;
+    text-shadow: 0px 2px 0px #235796;
+    margin: 0px auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.logout-button{
+    position: fixed;
+    right: 5px;
+    top: 5px;
+    z-index: 999999;
+}
+
+.main {
+    overflow: auto;
+    margin-bottom: 50px;
+    margin-top: 150px;
+}
+
+.messageBox {
+    margin: 10px 20px 10px 10px;
+    padding: 10px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #DEDFE9;
+    background: #FFF none repeat scroll 0% 0%;
+}
+.messageList {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.message-footer {
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0px;
+    margin-right: 10px;
+}
+.message-content {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 8px;
+    min-height: 20px;
+    line-height: 20px;
+}
+.message-header {
+    position: relative;
+    padding-right: 10px;
+    margin-bottom: 8px;
+    min-height: 20px;
+    line-height: 20px;
+    margin-right: 10px;
 }

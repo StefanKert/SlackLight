@@ -6,7 +6,7 @@
  * Time: 10:03
  */
 
-class DataManager {
+class DataManager extends BaseObject {
 
 
     private static $__connection;
@@ -36,6 +36,32 @@ class DataManager {
         return $statement;
     }
 
+
+
+    public static function performInsertion($command, array $params){
+        $con = self::getConnection();
+        self::query($con, 'BEGIN;');
+        self::query($con, $command, $params);
+        $id = self::lastInsertId($con);
+        self::query($con, 'COMMIT;');
+        return $id;
+    }
+
+    public static function performSelectWithFetch($command, array $params, $fetchMethod){
+        $con = self::getConnection();
+        $res = self::query($con, $command, $params);
+        $result = $fetchMethod($res);
+        self::close($res);
+        return $result;
+    }
+
+    public static function performAction($command, array $params) {
+        $con = DataManager::getConnection();
+        DataManager::query($con, 'BEGIN;');
+        DataManager::query($con, $command, $params);
+        DataManager::query($con, 'COMMIT;');
+        return null;
+    }
 
     public static function close($cursor) {
         $cursor->closeCursor();
