@@ -17,15 +17,49 @@ class Util extends BaseObject {
         return $res;
     }
 
-    public static function redirect($page = null, $errors = null){
-        if($page == null){
-            $page = isset($_REQUEST['page']) ?
-                $_REQUEST['page'] : $_SERVER['REQUEST_URI'];
+    public static function generateUrl($file, $view = null, $controller = null, $action = null){
+        $url = $file;
+        if(!StringUtils::endsWith($file, ".php")) {
+            $url .= ".php";
         }
-        if($errors != null) {
-            $page .= '&errors=' . urlencode(serialize($errors));
+            $url .= "?";
+            if($view != null){
+                $url .= "view=" . $view . "&";
+            }
+            if($controller != null){
+                $url .= "controller=" . $view . "&";
+            }
+            if($action != null){
+                $url .= "action=" . $action . "&";
+            }
+        if(StringUtils::endsWith($url, "?")) {
+            $url = rtrim($url, "?");
         }
-        header("Location: $page");
+        if(StringUtils::endsWith($url, "&"))
+            $url = rtrim($url,"&");
+        return $url;
+    }
+
+    public static  function redirect($target = null, array $errors = null, $parameters = null) {
+        if ($target == null) {
+            if (!isset($_REQUEST['page'])) {
+                throw new Exception('Missing target for forward.');
+            }
+            $target = $_REQUEST['page'];
+        }
+
+        if ($errors != null && count($errors) > 0)
+            $target .= '&errors=' . urlencode(serialize($errors));
+        if($parameters != null) {
+            foreach ($parameters as $key => $val)
+                $target .= '&' . $key . '=' . urlencode($val);
+        }
+        header('location: ' . $target);
+    }
+
+
+    public static function readKeyFromRequest($key, $default = null){
+        return  isset($_REQUEST[$key]) ? $_REQUEST[$key] : $default;
     }
 
     public static function redirectWithInterval($page = null, $seconds = 0){
@@ -33,6 +67,7 @@ class Util extends BaseObject {
             $page = isset($_REQUEST['page']) ?
                 $_REQUEST['page'] : $_SERVER['REQUEST_URI'];
         }
-        header( "refresh:$seconds;url=$page" );
+        header("refresh:$seconds;url=$page");
     }
 }
+?>

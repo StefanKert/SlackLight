@@ -2,17 +2,28 @@
 
 class AuthenticationController extends BaseObject
 {
-    private $repository;
+    private $userRepository;
+    private $channelRepository;
 
+    const CONTROLLER_NAME = 'authentication';
     const ACTION = 'action';
     const METHOD_POST = 'POST';
     const ACTION_REGISTER = 'register';
     const ACTION_LOGIN = 'login';
     const ACTION_LOGOUT = 'logout';
 
-    public function __construct(UserRepository $repository)
+    const USER_NAME = 'username';
+    const PASSWORD = 'password';
+    const PASSWORD_CHECK = 'passwordCheck';
+    const FIRST_NAME = 'firstname';
+    const LAST_NAME = 'lastname';
+    const MAIL = 'mail';
+    const CHANNELS = 'channels';
+
+    public function __construct(UserRepository $userRepository, ChannelRepository $channelRepository)
     {
-        $this->repository = $repository;
+        $this->userRepository = $userRepository;
+        $this->channelRepository = $channelRepository;
     }
     public function handleAction()
     {
@@ -26,15 +37,15 @@ class AuthenticationController extends BaseObject
 
         switch ($action) {
             case self::ACTION_LOGIN:
-                self::login();
+                $this->login();
                 break;
 
             case self::ACTION_LOGOUT :
-                self::logout();
+                $this->logout();
                 break;
 
             case self::ACTION_REGISTER :
-                self:: register();
+                $this->register();
                 break;
             default :
                 throw new Exception('Unknown controller action ' . $action);
@@ -45,8 +56,8 @@ class AuthenticationController extends BaseObject
 
     private function login(){
         $errors = array();
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+        $username =  Util::readKeyFromRequest(self::USER_NAME);
+        $password =  Util::readKeyFromRequest(self::PASSWORD);
 
         if(!isset($username) || strlen($username) == 0){
             $errors[] = "Kein Benutzername angegeben.";
@@ -58,28 +69,29 @@ class AuthenticationController extends BaseObject
             $errors[] = "Die Kombination aus Benutzername und Passwort existiert nicht in der Datenbank.";
         }
         if (count($errors) > 0) {
-            Util::redirect("index.php?view=login", $errors);
+            Util::redirect(Util::generateUrl("index.php", "login"), $errors);
             return;
         }
         else{
-            Util::redirect("index.php?view=main");
+            Util::redirect(Util::generateUrl("index.php", "main"));
             return;
         }
     }
 
     private function logout(){
         AuthenticationManager::signOut();
-        Util::redirect("index.php?view=login");
+        Util::redirect(Util::generateUrl("index.php", "login"));
     }
 
     private function register(){
         $errors = array();
-        $userName = $_POST['userName'];
-        $password = $_POST['password'];
-        $passwordCheck = $_POST['passwordCheck'];
-        $firstName = $_POST['firstName'];
-        $lastName = $_POST['lastName'];
-        $mail = $_POST['mail'];
+        $userName =  Util::readKeyFromRequest(self::USER_NAME);
+        $password =  Util::readKeyFromRequest(self::PASSWORD);
+        $passwordCheck =  Util::readKeyFromRequest(self::PASSWORD_CHECK);
+        $firstName =  Util::readKeyFromRequest(self::FIRST_NAME);
+        $lastName =  Util::readKeyFromRequest(self::LAST_NAME);
+        $mail =  Util::readKeyFromRequest(self::MAIL);
+        $channels = Util::readKeyFromRequest(self::CHANNELS);
 
 
         if(!isset($userName) || strlen($userName) == 0){
@@ -103,19 +115,29 @@ class AuthenticationController extends BaseObject
         if($password != $passwordCheck){
             $errors[] = "Das Wiederholungspasswort ist nicht das selbe wie das Passwort.";
         }
-        if($this->repository->getUserForUserName($userName) != null){
+        if($this->userRepository->getUserForUserName($userName) != null){
             $errors[] = "Ein Benutzer mit dem angegebenen Benutzernamen existiert bereits.";
         }
+        if (count($channels) == 0) {
+            $errors[] = "Bitte wählen Sie einen oder mehrere Channels aus.";
+        }
         if (count($errors) > 0) {
-            Util::redirect("index.php?view=register", $errors);
+            Util::redirect("index.php?view=register", $errors, array(
+                self::USER_NAME => $userName,
+                self::FIRST_NAME => $firstName,
+                self::LAST_NAME => $lastName,
+                self::MAIL => $mail
+            ));
             return;
         }
         else{
-            $this->repository->createUser($userName, $password, $firstName, $lastName, $mail);
-            Util::redirect("index.php?view=registerSuccess");
+            $userId = $this->userRepository->createUser($userName, $password, $firstName, $lastName, $mail);
+            foreach($channels as $channelId) {
+                $this->channelRepository->createUserChannelRegistration($channelId, $userId, "1000-01-01");
+            }
+            Util::redirect(Util::generateUrl("index.php", "registerSuccess"));
             return;
         }
     }
 }
-
 ?>

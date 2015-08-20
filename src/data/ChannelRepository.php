@@ -30,23 +30,24 @@ class ChannelRepository extends BaseObject
         });
     }
 
-    public function setChannelLastSeenToCurrentTime($channelId){
-        $userId = $_SESSION['user'];
+    public function setChannelLastSeenToCurrentTimeForUser($channelId, $userId){
         return DataManager::performAction("UPDATE userchannelregestrations SET lastTimeOpenedChannel = now() WHERE channelId = ? AND userId = ?;", array($channelId, $userId));
     }
 
-    public function getChannelLastSeenToCurrentTime($channelId){
-        $userId = $_SESSION['user'];
+    public function getChannelLastSeenToCurrentTimeForUser($channelId, $userId){
         return DataManager::performSelectWithFetch("SELECT lastTimeOpenedChannel FROM userchannelregestrations WHERE channelId = ? AND userId = ?;", array($channelId, $userId), function($res){
             return $res->fetchColumn();
         });
     }
 
-    public function getCountOfNewPosts($channelId){
-        $userId = $_SESSION['user'];
-        return DataManager::performSelectWithFetch("SELECT COUNT(*) FROM comments WHERE comments.channelId = ? AND comments.creationDate > (SELECT lastTimeOpenedChannel FROM userchannelregestrations WHERE userchannelregestrations.channelId = ? AND userchannelregestrations.userId = ?);", array($channelId, $channelId, $userId), function($res){
+    public function getCountOfNewPostsForUser($channelId, $userId){
+        return DataManager::performSelectWithFetch("SELECT COUNT(*) FROM comments WHERE comments.deleted = 0 comments.channelId = ? AND comments.creationDate > (SELECT lastTimeOpenedChannel FROM userchannelregestrations WHERE userchannelregestrations.channelId = ? AND userchannelregestrations.userId = ?);", array($channelId, $channelId, $userId), function($res){
             return $res->fetchColumn();
         });
+    }
+
+    public function createUserChannelRegistration($channelId, $userId, $lastTimeOpenedChannel) {
+        return DataManager::performInsertion("INSERT INTO userchannelregestrations (channelId, userId, lastTimeOpenedChannel) VALUES (?, ?, ?);", array($channelId, $userId, $lastTimeOpenedChannel));
     }
 
 
@@ -66,21 +67,5 @@ class ChannelRepository extends BaseObject
             return null;
         }
     }
-
-    private function fetchLastTimeOpenedChannel($res){
-        if ($c = DataManager::fetchObject($res)) {
-            return $c->fetchColumn();
-        }
-        else{
-            return 0;
-        }
-    }
-    private function fetchCount($res){
-        if ($c = DataManager::fetchObject($res)) {
-            return $c->lastTimeOpenedChannel;
-        }
-        else{
-            return null;
-        }
-    }
 }
+?>

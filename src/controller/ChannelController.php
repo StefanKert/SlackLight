@@ -2,17 +2,23 @@
 
 class ChannelController extends BaseObject
 {
-    private $repository;
+    private $commentRepository;
 
     const ACTION = 'action';
     const METHOD_POST = 'POST';
     const ACTION_ADD_COMMENT = 'addComment';
+    const ACTION_EDIT_COMMENT = 'editComment';
+    const ACTION_DELETE_COMMENT = 'deleteComment';
     const ACTION_ADD_FAVORITE = 'addFavorite';
     const ACTION_REMOVE_FAVORITE = 'removeFavorite';
 
-    public function __construct(CommentRepository $repository)
+    const CHANNEL_ID = 'channelId';
+    const COMMENT_ID = 'commentId';
+    const COMMENT = 'comment';
+
+    public function __construct(CommentRepository $commentRepository)
     {
-        $this->repository = $repository;
+        $this->commentRepository = $commentRepository;
     }
     public function handleAction()
     {
@@ -28,6 +34,12 @@ class ChannelController extends BaseObject
             case self::ACTION_ADD_COMMENT:
                 $this->addComment();
                 break;
+            case self::ACTION_EDIT_COMMENT:
+                $this->editComment();
+                break;
+            case self::ACTION_DELETE_COMMENT:
+                $this->deleteComment();
+                break;
             case self::ACTION_ADD_FAVORITE:
                 $this->addFavorite();
                 break;
@@ -42,19 +54,34 @@ class ChannelController extends BaseObject
 
     private function addComment()
     {
-        $channelId = $_GET['channelId'];
-        $comment = $_POST['comment'];
-        $userId = $_SESSION['user'];
-        $this->repository->createComment($comment, $channelId, $userId);
+        $channelId = Util::readKeyFromRequest(self::CHANNEL_ID);
+        $comment = Util::readKeyFromRequest(self::COMMENT);
+        $userId = SessionContext::getCurrentUser();
+        $this->commentRepository->createComment($comment, $channelId, $userId);
+        Util::redirect("index.php?view=main&channelId=" . $channelId);
+    }
+
+    private function editComment(){
+        $channelId = Util::readKeyFromRequest(self::CHANNEL_ID);
+        $comment = Util::readKeyFromRequest(self::COMMENT);
+        $commentId = Util::readKeyFromRequest(self::COMMENT_ID);
+        $this->commentRepository->updateComment($comment, $commentId);
+        Util::redirect("index.php?view=main&channelId=" . $channelId);
+    }
+
+    private function deleteComment(){
+        $commentId = Util::readKeyFromRequest(self::COMMENT_ID);
+        $channelId = Util::readKeyFromRequest(self::CHANNEL_ID);
+        $this->commentRepository->deleteComment($commentId);
         Util::redirect("index.php?view=main&channelId=" . $channelId);
     }
 
     private function addFavorite()
     {
-        $channelId = $_GET['channelId'];
-        $commentId = $_GET['commentId'];
-        $userId = $_SESSION['user'];
-        $this->repository->createFavoriteForComment($commentId, $userId);
+        $channelId = Util::readKeyFromRequest(self::CHANNEL_ID);
+        $commentId = Util::readKeyFromRequest(self::COMMENT_ID);
+        $userId =  SessionContext::getCurrentUser();
+        $this->commentRepository->createFavoriteForComment($commentId, $userId);
         if($channelId != null)
             Util::redirect("index.php?view=main&channelId=" . $channelId);
         else
@@ -63,15 +90,14 @@ class ChannelController extends BaseObject
 
     private function removeFavorite()
     {
-        $channelId = $_GET['channelId'];
-        $commentId = $_GET['commentId'];
-        $userId = $_SESSION['user'];
-        $this->repository->deleteFavoriteForComment($commentId, $userId);
+        $channelId = Util::readKeyFromRequest(self::CHANNEL_ID);
+        $commentId = Util::readKeyFromRequest(self::COMMENT_ID);
+        $userId =  SessionContext::getCurrentUser();
+        $this->commentRepository->deleteFavoriteForComment($commentId, $userId);
          if($channelId != null)
             Util::redirect("index.php?view=main&channelId=" . $channelId);
         else
             Util::redirect("index.php?view=main");
     }
 }
-
 ?>

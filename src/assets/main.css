@@ -118,7 +118,7 @@ footer p, header p {
 .main {
     overflow: auto;
     margin-bottom: 50px;
-    margin-top: 150px;
+    margin-top: 90px;
 }
 
 .messageBox {
@@ -129,6 +129,7 @@ footer p, header p {
     border: 1px solid #DEDFE9;
     background: #FFF none repeat scroll 0% 0%;
 }
+
 .messageList {
     overflow-y: scroll;
     overflow-x: hidden;
@@ -136,21 +137,25 @@ footer p, header p {
 .message-footer {
     font-size: 12px;
     line-height: 16px;
-    margin: 0px;
-    margin-right: 10px;
 }
 .message-content {
     position: relative;
-    padding-left: 25px;
     margin-bottom: 8px;
     min-height: 20px;
     line-height: 20px;
+    padding: 10px;
 }
 .message-header {
     position: relative;
+    float: left;
     padding-right: 10px;
     margin-bottom: 8px;
     min-height: 20px;
     line-height: 20px;
     margin-right: 10px;
+}
+
+.message-information {
+    font-size: 12px;
+    padding-left: 5px;
 }

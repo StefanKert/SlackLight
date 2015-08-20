@@ -3,6 +3,7 @@
     ini_set('display_error', 'On');
 
     include 'common/BaseObject.php';
+    include 'common/StringUtils.php';
     include 'common/Util.php';
     include 'common/SessionContext.php';
     include 'common/AuthenticationManager.php';

@@ -1,22 +1,29 @@
 <?php
+    ob_start();
     require_once('inc/bootstrap.php');
     SessionContext::create();
+
+    $userRepository = new UserRepository();
+    $channelRepository = new ChannelRepository();
+    $commentRepository = new CommentRepository();
+
     require_once("views/partials/header.php");
-    $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'login';
+    $view = Util::readKeyFromRequest('view', 'login');
     if(file_exists(__DIR__. '/views/' . $view . '.php'))
         require_once('views/' . $view . '.php');
-    $controllerName = isset($_REQUEST['controller']) ? $_REQUEST['controller'] : '';
+    $controllerName = Util::readKeyFromRequest('controller', '');
     switch($controllerName){
         case "authentication":
-            $controller = new AuthenticationController(new UserRepository());
+            $controller = new AuthenticationController($userRepository, $channelRepository);
             $controller->handleAction();
             break;
         case "channel":
-            $controller = new ChannelController(new CommentRepository());
+            $controller = new ChannelController($commentRepository);
             $controller->handleAction();
             break;
         default:
             break;
     }
-    require_once("views/partials/footer.php")
+    require_once("views/partials/footer.php");
+    ob_end_flush();
 ?>

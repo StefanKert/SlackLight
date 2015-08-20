@@ -38,7 +38,7 @@
                 <?php
                     $channels = $channelRepository->getChannelsForUser($_SESSION['user']);
                     foreach ($channels as $channel){
-                        echo('<li><a href="index.php?view=main&channelId='. $channel->getId() .'"/>' .  $channel->getTitle() . '(' .$channelRepository->getCountOfNewPosts($channel->getId()) . ')</a></li>');
+                        echo('<li><a href="index.php?view=main&channelId='. $channel->getId() .'"/>' .  $channel->getTitle() . '(' .$channelRepository->getCountOfNewPostsForUser($channel->getId(), SessionContext::getCurrentUser()) . ')</a></li>');
                     }
                 ?>
             </ul>

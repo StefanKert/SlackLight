@@ -22,17 +22,7 @@ class DataManager extends BaseObject {
 
     public static function query ($connection, $query, $parameters = array()) {
         $statement = $connection->prepare($query);
-        $i = 1;
-        foreach ($parameters as $param) {
-            if (is_int($param)) {
-                $statement->bindValue($i, $param, PDO::PARAM_INT);
-            }
-            if (is_string($param)) {
-                $statement->bindValue($i, $param, PDO::PARAM_STR);
-            }
-            $i++;
-        }
-        $statement->execute();
+        $statement->execute($parameters);
         return $statement;
     }
 
@@ -40,10 +30,10 @@ class DataManager extends BaseObject {
 
     public static function performInsertion($command, array $params){
         $con = self::getConnection();
-        self::query($con, 'BEGIN;');
+        $con->beginTransaction();
         self::query($con, $command, $params);
-        $id = self::lastInsertId($con);
-        self::query($con, 'COMMIT;');
+        $id = $con->lastInsertId();
+        $con->commit();
         return $id;
     }
 
@@ -57,9 +47,9 @@ class DataManager extends BaseObject {
 
     public static function performAction($command, array $params) {
         $con = DataManager::getConnection();
-        DataManager::query($con, 'BEGIN;');
+        $con->beginTransaction();
         DataManager::query($con, $command, $params);
-        DataManager::query($con, 'COMMIT;');
+        $con->commit();
         return null;
     }
 
@@ -71,7 +61,21 @@ class DataManager extends BaseObject {
         return $cursor->fetchObject();
     }
 
-    public static function lastInsertId($connection){
-        $connection->lastInsertId();
+    public static function logAction($message) {
+        $con = self::getConnection();
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $requestUri = $_SERVER['REQUEST_URI'];
+        self::query($con, "
+                INSERT INTO action_log (
+                  ip_address, user_agent, request_uri, message, datetime
+                ) VALUES (
+                  '" . $ipaddress . "',
+                  '" . $userAgent . "',
+                  '" . $requestUri . "',
+                  '" . $message . "',
+                  NOW());"
+        );
+        self::closeConnection($con);
     }
 }

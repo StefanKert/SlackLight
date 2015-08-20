@@ -7,14 +7,16 @@ class Comment extends Entity {
     private $text;
     private $channelId;
     private $creationUserId;
+    private $deleted;
 
-    public function __construct($id, $creationDate, $updatedDate, $text, $channelId, $creationUserId) {
+    public function __construct($id, $creationDate, $updatedDate, $text, $channelId, $creationUserId, $deleted) {
         parent::__construct($id);
         $this->creationDate = $creationDate;
         $this->updatedDate = $updatedDate;
         $this->text = $text;
         $this->channelId = $channelId;
         $this->creationUserId = $creationUserId;
+        $this->deleted = $deleted;
     }
 
 
@@ -36,5 +38,9 @@ class Comment extends Entity {
 
     public function getCreationUserId(){
         return $this->creationUserId;
+    }
+
+    public function getDeleted(){
+        return $this->deleted;
     }
 }

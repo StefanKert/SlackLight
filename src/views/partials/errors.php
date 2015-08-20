@@ -1,7 +1,6 @@
 <?php
-    if(isset($_GET["errors"])){
+    if(isset($_GET["errors"]))
         $errors = unserialize(urldecode($_GET["errors"]));
-    }
     if (isset($errors) && is_array($errors)) {
 ?>
     <div>
