@@ -3,6 +3,7 @@
     ini_set('display_error', 'On');
 
     include 'common/BaseObject.php';
+    include 'common/Logger.php';
     include 'common/StringUtils.php';
     include 'common/Util.php';
     include 'common/SessionContext.php';
@@ -17,8 +18,4 @@
     include 'models/Comment.php';
     include 'controller/AuthenticationController.php';
     include 'controller/ChannelController.php';
-    /*spl_autoload_register(function($className){
-        include 'controller/' . $className . '.php';
-        include 'common/' . $className . '.php';
-    });*/
 ?>

@@ -28,6 +28,7 @@ class AuthenticationController extends BaseObject
     public function handleAction()
     {
         if (!isset($_REQUEST[self::ACTION])) {
+            Logger::saveRequestLog('Action not specified');
             throw new Exception('Action not specified');
             return null;
         }
@@ -37,17 +38,21 @@ class AuthenticationController extends BaseObject
 
         switch ($action) {
             case self::ACTION_LOGIN:
+                Logger::saveRequestLog("Trying to perform login.");
                 $this->login();
                 break;
 
             case self::ACTION_LOGOUT :
+                Logger::saveRequestLog("Trying to perform logout.");
                 $this->logout();
                 break;
 
             case self::ACTION_REGISTER :
+                Logger::saveRequestLog("Trying to perform register.");
                 $this->register();
                 break;
             default :
+                Logger::saveRequestLog("Error. Unknown action: " . $action);
                 throw new Exception('Unknown controller action ' . $action);
 
         }
@@ -69,10 +74,12 @@ class AuthenticationController extends BaseObject
             $errors[] = "Die Kombination aus Benutzername und Passwort existiert nicht in der Datenbank.";
         }
         if (count($errors) > 0) {
+            Logger::saveRequestLog("Logging in $username had errors.", $errors);
             Util::redirect(Util::generateUrl("index.php", "login"), $errors);
             return;
         }
         else{
+            Logger::saveRequestLog("Logging in $username successful.");
             Util::redirect(Util::generateUrl("index.php", "main"));
             return;
         }
@@ -91,14 +98,14 @@ class AuthenticationController extends BaseObject
         $firstName =  Util::readKeyFromRequest(self::FIRST_NAME);
         $lastName =  Util::readKeyFromRequest(self::LAST_NAME);
         $mail =  Util::readKeyFromRequest(self::MAIL);
-        $channels = Util::readKeyFromRequest(self::CHANNELS);
+        $channels = Util::readKeyFromRequestWithoutEscape(self::CHANNELS);
+        Logger::saveRequestLog("Channels ". count($channels) . serialize($channels));
 
-
-        if(!isset($userName) || strlen($userName) == 0){
-            $errors[] = "Kein Benutzername angegeben.";
+        if(!isset($userName) || strlen($userName) < 4){
+            $errors[] = "Kein oder ein zu kurzer Benutzername angegeben. Der Benutzername muss mindestens 4 Zeichen lang sein.";
         }
-        if(!isset($password) || strlen($password) == 0){
-            $errors[] = "Kein Passwort angegeben.";
+        if(!isset($password) || strlen($password) < 4){
+            $errors[] = "Kein oder ein zu kurzes Passwort angegeben. Das Passwort muss mindestens 4 Zeichen lang sein.";
         }
         if(!isset($firstName) || strlen($firstName) == 0){
             $errors[] = "Kein Vorname angegeben.";
@@ -115,14 +122,18 @@ class AuthenticationController extends BaseObject
         if($password != $passwordCheck){
             $errors[] = "Das Wiederholungspasswort ist nicht das selbe wie das Passwort.";
         }
+        if($this->userRepository->getUserForMail($mail) != null){
+            $errors[] = "Ein Benutzer mit der angegebenen EMail Adresse existiert bereits.";
+        }
         if($this->userRepository->getUserForUserName($userName) != null){
             $errors[] = "Ein Benutzer mit dem angegebenen Benutzernamen existiert bereits.";
         }
-        if (count($channels) == 0) {
-            $errors[] = "Bitte wählen Sie einen oder mehrere Channels aus.";
+        if (!isset($channels) || count($channels) == 0) {
+            $errors[] = "Bitte selektieren Sie einen oder mehrere Channels.";
         }
         if (count($errors) > 0) {
-            Util::redirect("index.php?view=register", $errors, array(
+            Logger::saveRequestLog("Registering for $userName failed.", $errors);
+            Util::redirect(Util::generateUrl("index.php", "register"), $errors, array(
                 self::USER_NAME => $userName,
                 self::FIRST_NAME => $firstName,
                 self::LAST_NAME => $lastName,
@@ -131,10 +142,12 @@ class AuthenticationController extends BaseObject
             return;
         }
         else{
-            $userId = $this->userRepository->createUser($userName, $password, $firstName, $lastName, $mail);
+            Logger::saveRequestLog("Channels ". count($channels) . serialize($channels));
+            $userId = $this->userRepository->createUser($userName, hash('sha1', "$userName|$password"), $firstName, $lastName, $mail);
             foreach($channels as $channelId) {
-                $this->channelRepository->createUserChannelRegistration($channelId, $userId, "1000-01-01");
+                $this->channelRepository->createUserChannelRegistration($channelId, $userId, "0001-01-01");
             }
+            Logger::saveRequestLog("Registered $userName successful.");
             Util::redirect(Util::generateUrl("index.php", "registerSuccess"));
             return;
         }

@@ -21,6 +21,13 @@ class UserRepository extends BaseObject
         return $result;
     }
 
+    public function getUserForMail($mail) {
+        $result = DataManager::performSelectWithFetch("SELECT id, username, passwordHash, firstName, lastName, mail FROM users WHERE mail = ?;", array($mail), function($res){
+            return $this->fetchUserObject($res);
+        });
+        return $result;
+    }
+
     private function fetchUserObject($res){
         if ($u = DataManager::fetchObject($res)) {
             return new User($u->id, $u->username, $u->passwordHash, $u->firstName, $u->lastName, $u->mail);

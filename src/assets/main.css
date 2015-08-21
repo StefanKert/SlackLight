@@ -32,6 +32,10 @@ body {
     overflow: auto;
 }
 .add-message-box {
+    position: fixed;
+    z-index: 999999;
+    right: 5px;
+    top: 80px;
 }
 
 header {
@@ -46,7 +50,7 @@ header {
     background: #4276B6 url("images/background.png") repeat scroll 0% 0%;
     box-shadow: 1px 0px 2px rgba(0, 0, 0, 0.75);
     z-index: 99;
-    min-height: 76px;
+    min-height: 40px;
 }
 
 footer {
@@ -63,7 +67,7 @@ footer {
 }
 
 header h1 {
-    font: 40px/48px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: 24px/28px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #F3F3F3;
     text-shadow: 0px 2px 0px #235796;
     margin: 0px;
@@ -73,7 +77,7 @@ header h1 {
 }
 
 footer p, header p {
-    font: 24px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: 18px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #F3F3F3;
     text-shadow: 0px 2px 0px #235796;
     margin: 0px;
@@ -88,7 +92,7 @@ footer p, header p {
     width: 100%;
     height: 50px;
     position: fixed;
-    top: 115px;
+    top: 80px;
     background: #FC0 none repeat scroll 0% 0%;
     border: 1px solid #F0B500;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
@@ -97,28 +101,39 @@ footer p, header p {
 }
 .sub-nav {
     list-style-type: none;
+    height: 50px;
+}
+.sub-nav li {
+    margin-top: 10px;
 }
 .sub-nav li a {
-    font: 24px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
-    color: black;
+    font: 18px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #2D15A6;
+    text-shadow: 0px 1px 0px #235796;
+    margin-top: 25px;
+}
+
+.user-label{
+    font: 18px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #F3F3F3;
     text-shadow: 0px 2px 0px #235796;
-    margin: 0px auto;
+    margin: 0px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.logout-button{
     position: fixed;
-    right: 5px;
-    top: 5px;
+    right: 15px;
+    top: 15px;
     z-index: 999999;
+}
+.user-label a{
+    color: white;
 }
 
 .main {
     overflow: auto;
     margin-bottom: 50px;
-    margin-top: 90px;
+    margin-top: 50px;
 }
 
 .messageBox {
@@ -130,10 +145,20 @@ footer p, header p {
     background: #FFF none repeat scroll 0% 0%;
 }
 
-.messageList {
-    overflow-y: scroll;
-    overflow-x: hidden;
+.active {
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #DEDFE9;
 }
+
+.comments {
+    overflow: auto;
+    width: 100%;
+    height: 550px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
 .message-footer {
     font-size: 12px;
     line-height: 16px;
@@ -158,4 +183,23 @@ footer p, header p {
 .message-information {
     font-size: 12px;
     padding-left: 5px;
+}
+
+.message-icons {
+    text-align: right;
+}
+.message-icons a {
+    font: 18px "Copse","Helvetica Neue",Helvetica,Arial,sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+}
+
+.channel-view {
+    margin-top: 20px;
+}
+
+.new-post{
+    border: 1px solid #c12e2a;
 }

@@ -40,13 +40,15 @@ class ChannelRepository extends BaseObject
         });
     }
 
-    public function getCountOfNewPostsForUser($channelId, $userId){
-        return DataManager::performSelectWithFetch("SELECT COUNT(*) FROM comments WHERE comments.deleted = 0 comments.channelId = ? AND comments.creationDate > (SELECT lastTimeOpenedChannel FROM userchannelregestrations WHERE userchannelregestrations.channelId = ? AND userchannelregestrations.userId = ?);", array($channelId, $channelId, $userId), function($res){
+    public function hasChannelNewPostsForUser($channelId, $userId){
+        $count = DataManager::performSelectWithFetch("SELECT COUNT(*) FROM comments WHERE comments.deleted = 0 AND comments.channelId = ? AND comments.creationDate > (SELECT lastTimeOpenedChannel FROM userchannelregestrations WHERE userchannelregestrations.channelId = ? AND userchannelregestrations.userId = ?);", array($channelId, $channelId, $userId), function($res){
             return $res->fetchColumn();
         });
+        return $count > 0;
     }
 
     public function createUserChannelRegistration($channelId, $userId, $lastTimeOpenedChannel) {
+        Logger::saveRequestLog("Performing createUserChannelRegistration with params.", array($channelId, $userId, $lastTimeOpenedChannel));
         return DataManager::performInsertion("INSERT INTO userchannelregestrations (channelId, userId, lastTimeOpenedChannel) VALUES (?, ?, ?);", array($channelId, $userId, $lastTimeOpenedChannel));
     }
 

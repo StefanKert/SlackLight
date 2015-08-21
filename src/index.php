@@ -2,7 +2,12 @@
     ob_start();
     require_once('inc/bootstrap.php');
     SessionContext::create();
-
+    if(AuthenticationManager::isAuthenticated()){
+        Logger::saveRequestLog('Request to index.php from user with Id ' . SessionContext::getCurrentUser());
+    }
+    else{
+        Logger::saveRequestLog('Anonymous request to index.php');
+    }
     $userRepository = new UserRepository();
     $channelRepository = new ChannelRepository();
     $commentRepository = new CommentRepository();

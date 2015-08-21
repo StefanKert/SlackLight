@@ -33,6 +33,8 @@ class DataManager extends BaseObject {
         $con->beginTransaction();
         self::query($con, $command, $params);
         $id = $con->lastInsertId();
+        if($id === null)
+            throw new Exception("Inserting element failed");
         $con->commit();
         return $id;
     }

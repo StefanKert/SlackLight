@@ -8,18 +8,11 @@ class AuthenticationManager extends BaseObject
     {
         $repository = new UserRepository();
         $user = $repository->getUserForUserName($userName);
-        /*       if($user != null && $user->getPasswordHash() == hash('sha1', "$userName|$password")){
-                   $_SESSION['user'] = $user->getId();
-                   return true;
-               }
-               else{
-                   self::signOut();
-                   return false;
-               }*/
-        if ($user != null && $user->getPasswordHash() == $password) {
+        if($user != null && $user->getPasswordHash() == hash('sha1', "$userName|$password")){
             $_SESSION['user'] = $user->getId();
             return true;
-        } else {
+        }
+        else{
             self::signOut();
             return false;
         }

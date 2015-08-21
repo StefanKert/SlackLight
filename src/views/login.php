@@ -1,6 +1,6 @@
 <?php
     if(AuthenticationManager::isAuthenticated()){
-        Util::redirect("index.php?view=main");
+        Util::redirect(Util::generateUrl('index.php', 'main'));
     }
 ?>
 
@@ -8,12 +8,12 @@
     <div class="login-box">
         <div class="row">
             <div class="large-12 columns">
-                <form method="post" action="index.php?controller=authentication&action=login">
+                <form method="post" action="<?php echo Util::generateUrl('index.php', null, 'authentication', 'login') ?>">
                     <div class="row">
                         <div class="large-12 columns">
                             <label>
                                 Benutzername
-                                <input type="text" name="username" placeholder="Benutzername" required/>
+                                <input type="text" name="<?php echo AuthenticationController::USER_NAME; ?>" placeholder="Benutzername" required/>
                             </label>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                         <div class="large-12 columns">
                             <label>
                                 Passwort
-                                <input type="password" name="password" placeholder="Passwort" required/>
+                                <input type="password" name="<?php echo AuthenticationController::PASSWORD; ?>" placeholder="Passwort" required/>
                             </label>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                     </div>
                     <p>
                         Haben Sie noch keinen Benutzer? Dann vergeuden Sie keine weitere Sekunde ohne Slack Light
-                        und    <a href="index.php?view=register"> Registrieren </a> Sie sich jetzt!
+                        und    <a href="<?php echo Util::generateUrl('index.php', 'register') ?>"> Registrieren </a> Sie sich jetzt!
                     </p>
                 </form>
             </div>

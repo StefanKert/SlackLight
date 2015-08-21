@@ -30,15 +30,15 @@ class CommentRepository extends BaseObject
     }
 
     public function updateComment($comment, $commentId){
-        return DataManager::performAction("UPDATE comments SET text = ? AND updatedDate = now() WHERE id = ?;", array($comment, $commentId));
+        return DataManager::performAction("UPDATE comments SET text = ?, updatedDate = now() WHERE id = ?;", array($comment, $commentId));
     }
 
     public function deleteComment($commentId){
         return DataManager::performAction("UPDATE comments SET deleted = 1 WHERE id = ?;", array($commentId));
     }
 
-    public function getAllFavoredComments(){
-        return DataManager::performSelectWithFetch("SELECT id, creationDate, updatedDate, text, channelId, creationUserId FROM comments WHERE deleted = 0 AND EXISTS (SELECT * FROM favorites WHERE favorites.commentId = comments.id AND favorites.userId = ?);", array($_SESSION['user']), function($res){
+    public function getAllFavoredCommentsForUserByChannel($userId, $channelId){
+        return DataManager::performSelectWithFetch("SELECT id, creationDate, updatedDate, text, channelId, creationUserId, deleted FROM comments WHERE deleted = 0 AND channelId = ? AND EXISTS (SELECT * FROM favorites WHERE favorites.commentId = comments.id AND favorites.userId = ?);", array($channelId, $userId), function($res){
             return $this->fetchCommentObjects($res);
         });
     }
@@ -50,10 +50,9 @@ class CommentRepository extends BaseObject
     }
 
     public function isCommentLastForUserInChannel($channelId, $commentId, $userId){
-        $lastComment = DataManager::performSelectWithFetch("SELECT * FROM comments WHERE deleted = 0 AND channelId = 1 ORDER BY creationDate DESC LIMIT 1;", array($channelId, $commentId), function($res){
+        $lastComment = DataManager::performSelectWithFetch("SELECT * FROM comments WHERE deleted = 0 AND channelId = ? ORDER BY creationDate DESC LIMIT 1;", array($channelId), function($res){
             return $this->fetchCommentObject($res);
         });
-
         return $lastComment->getId() === $commentId && $lastComment->getCreationUserId() === $userId;
     }
 

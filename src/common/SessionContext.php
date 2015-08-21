@@ -17,7 +17,6 @@ class SessionContext extends BaseObject {
     public static function getCurrentUser(){
         return $_SESSION[self::USER_ID];
     }
-
 }
 
 ?>
